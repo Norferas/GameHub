@@ -109,6 +109,9 @@ class SiteSetting(db.Model):
     key = db.Column(db.String(80), unique=True, nullable=False)
     value = db.Column(db.Text, default="")
 
+with app.app_context():
+    db.create_all()
+    
 def current_user():
     uid = session.get("user_id")
     return db.session.get(User, uid) if uid else None
