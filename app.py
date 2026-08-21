@@ -1,16 +1,48 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
-import os, uuid
+import uuid
+
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+# Cria as pastas necessárias automaticamente
+os.makedirs(os.path.join(BASE_DIR, "instance"), exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, "static", "uploads"), exist_ok=True)
+
+
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-secret-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "instance", "gamehub.db")
+
+app.config["SECRET_KEY"] = os.environ.get(
+    "SECRET_KEY",
+    "dev-secret-change-me"
+)
+
+
+# Banco de dados
+database_url = os.environ.get("DATABASE_URL")
+
+if database_url:
+    database_url = database_url.replace("postgres://", "postgresql://")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url or (
+    "sqlite:///" + os.path.join(BASE_DIR, "instance", "gamehub.db")
+)
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["UPLOAD_FOLDER"] = os.path.join(BASE_DIR, "static", "uploads")
+
+
+# Uploads
+app.config["UPLOAD_FOLDER"] = os.path.join(
+    BASE_DIR,
+    "static",
+    "uploads"
+)
+
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
 
 db = SQLAlchemy(app)
