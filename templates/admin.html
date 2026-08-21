@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Área de desenvolvedor</h1>
+<p>Um painel simples para alterar conteúdo sem ficar caçando variável no código.</p>
+
+<div class="stats">
+<div class="card"><b>Usuários</b><strong>{{ users }}</strong></div>
+<div class="card"><b>Jogos</b><strong>{{ games }}</strong></div>
+<div class="card"><b>Posts</b><strong>{{ posts }}</strong></div>
+</div>
+
+<div class="card">
+<h2>Configurações do site</h2>
+<form action="{{ url_for('admin_settings') }}" method="post">
+<input name="site_name" value="{{ settings.get('site_name','GameHub') }}" placeholder="Nome do site">
+<input name="site_description" value="{{ settings.get('site_description','') }}" placeholder="Descrição">
+<input name="accent_color" value="{{ settings.get('accent_color','#7c5cff') }}" placeholder="Cor principal">
+<button>Salvar configurações</button>
+</form>
+</div>
+
+<div class="card">
+<h2>Cadastrar jogo</h2>
+<form action="{{ url_for('admin_game_create') }}" method="post">
+<input name="title" placeholder="Nome do jogo" required>
+<input name="cover" placeholder="URL da capa">
+<input name="developer" placeholder="Desenvolvedora">
+<input name="release_year" type="number" placeholder="Ano">
+<textarea name="description" placeholder="Descrição"></textarea>
+<button>Cadastrar jogo</button>
+</form>
+</div>
+{% endblock %}

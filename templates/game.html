@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="game-header card">
+{% if game.cover %}<img class="cover" src="{{ game.cover }}">{% endif %}
+<div>
+<h1>{{ game.title }}</h1>
+<p>{{ game.description }}</p>
+<p><b>Desenvolvedora:</b> {{ game.developer or "Não informado" }}</p>
+<p><b>Ano:</b> {{ game.release_year or "?" }}</p>
+<h2>{{ average if average is not none else "—" }}/10</h2>
+{% if current_user %}
+<form method="post">
+<label>Nota <input name="rating" type="number" min="1" max="10" value="8" required></label>
+<textarea name="comment" placeholder="Sua avaliação..."></textarea>
+<button>Salvar avaliação</button>
+</form>
+<form action="{{ url_for('add_library', game_id=game.id) }}" method="post">
+<select name="status">
+<option value="playing">Jogando</option>
+<option value="completed">Zerado</option>
+<option value="backlog">Backlog</option>
+<option value="dropped">Abandonei</option>
+</select>
+<button>Adicionar à biblioteca</button>
+</form>
+{% endif %}
+</div>
+</div>
+<h2>Avaliações</h2>
+{% for r in reviews %}
+<div class="card review"><b>{{ r.user.username }}</b> <span class="rating">{{ r.rating }}/10</span><p>{{ r.comment }}</p></div>
+{% else %}<div class="card">Ninguém avaliou este jogo ainda.</div>{% endfor %}
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">REDE SOCIAL DE JOGOS</p>
+    <h1>Seu perfil. Seus jogos. Sua opinião.</h1>
+    <p>Monte sua biblioteca, avalie jogos e compartilhe momentos da sua jornada.</p>
+  </div>
+</section>
+
+<div class="grid-home">
+<section>
+{% if current_user %}
+<div class="card">
+<h2>Publicar</h2>
+<form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+<input type="file" name="media" accept="image/*,video/*" required>
+<textarea name="description" placeholder="O que está acontecendo?"></textarea>
+<button>Publicar</button>
+</form>
+</div>
+{% endif %}
+
+<h2>Feed</h2>
+{% for post in posts %}
+<article class="card post">
+<div class="post-user"><a href="{{ url_for('profile', username=post.user.username) }}"><b>{{ post.user.username }}</b></a></div>
+{% if post.media_type == "image" %}
+<img src="{{ url_for('static', filename=post.media_path) }}" class="post-media">
+{% else %}
+<video class="post-media" controls src="{{ url_for('static', filename=post.media_path) }}"></video>
+{% endif %}
+<p>{{ post.description }}</p>
+<div class="comments">
+{% for c in post.comments %}
+<div><b>{{ c.user.username }}</b>: {{ c.text }}</div>
+{% endfor %}
+{% if current_user %}
+<form action="{{ url_for('comment_post', post_id=post.id) }}" method="post" class="inline-form">
+<input name="text" placeholder="Comentar..." required>
+<button>Enviar</button>
+</form>
+{% endif %}
+</div>
+</article>
+{% else %}
+<div class="card">Ainda não há publicações. O feed está esperando a primeira vítima... digo, publicação.</div>
+{% endfor %}
+</section>
+
+<aside>
+<div class="card">
+<h2>Jogos</h2>
+{% for g in games %}
+<a class="game-row" href="{{ url_for('game', game_id=g.id) }}">
+  {% if g.cover %}<img src="{{ g.cover }}">{% endif %}
+  <span>{{ g.title }}</span>
+</a>
+{% else %}
+<p>Nenhum jogo cadastrado ainda.</p>
+{% endfor %}
+</div>
+</aside>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="profile card">
+<h1>{{ user.username }}</h1>
+<p>{{ user.bio or "Este usuário ainda não escreveu uma bio." }}</p>
+<p>Jogos na biblioteca: {{ user.library|length }} · Avaliações: {{ user.reviews|length }} · Posts: {{ user.posts|length }}</p>
+</div>
+<h2>Avaliações</h2>
+{% for r in reviews %}
+<div class="card review"><a href="{{ url_for('game', game_id=r.game.id) }}"><b>{{ r.game.title }}</b></a> <span class="rating">{{ r.rating }}/10</span><p>{{ r.comment }}</p></div>
+{% else %}<div class="card">Nenhuma avaliação ainda.</div>{% endfor %}
+{% endblock %}
