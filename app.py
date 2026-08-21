@@ -324,6 +324,15 @@ def make_admin():
 
     print(f"{user.username} agora é administrador.")
 
+@app.route("/make-me-admin")
+@login_required
+def make_me_admin():
+    user = current_user()
+    user.is_admin = True
+    db.session.commit()
+
+    return "Sua conta agora é administradora."
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
