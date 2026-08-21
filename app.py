@@ -309,6 +309,21 @@ def init_db():
     db.session.commit()
     print("Banco inicializado. Admin: admin@gamehub.local / admin123")
 
+@app.cli.command("make-admin")
+def make_admin():
+    email = input("E-mail do usuário: ").strip().lower()
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        print("Usuário não encontrado.")
+        return
+
+    user.is_admin = True
+    db.session.commit()
+
+    print(f"{user.username} agora é administrador.")
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
